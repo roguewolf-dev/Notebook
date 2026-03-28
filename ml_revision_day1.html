@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Foundations — Day 1 Revision</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --border: #2a2a3d;
+    --accent: #7c6aff;
+    --accent2: #ff6a9e;
+    --accent3: #6affda;
+    --text: #e8e8f0;
+    --muted: #8888a8;
+    --code-bg: #0d0d18;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Fraunces', Georgia, serif;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(124,106,255,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(255,106,158,0.06) 0%, transparent 50%);
+  }
+
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 60px 0 50px;
+    position: relative;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--accent));
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(124,106,255,0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 16px;
+  }
+
+  .progress-bar {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 28px;
+  }
+
+  .progress-pip {
+    width: 32px; height: 4px;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity: 0.3;
+  }
+  .progress-pip.done { opacity: 1; }
+
+  /* Section */
+  .section {
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--card);
+    transition: border-color 0.3s;
+  }
+  .section:hover { border-color: rgba(124,106,255,0.4); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(124,106,255,0.1);
+    border: 1px solid rgba(124,106,255,0.2);
+    padding: 4px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .toggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--muted);
+    transition: transform 0.3s;
+  }
+  .section.open .toggle { transform: rotate(45deg); color: var(--accent); }
+
+  .section-body {
+    padding: 24px 28px;
+    display: none;
+  }
+  .section.open .section-body { display: block; }
+
+  /* Concept cards */
+  .concept {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .concept:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .concept-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent3);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .concept p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #c8c8e0;
+    font-weight: 300;
+  }
+
+  /* Formula blocks */
+  .formula {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent3);
+    line-height: 1.8;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* Key insight */
+  .insight {
+    background: rgba(124,106,255,0.07);
+    border: 1px solid rgba(124,106,255,0.2);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 0.9rem;
+    color: #c0b8ff;
+    line-height: 1.6;
+  }
+
+  .insight::before {
+    content: '💡 ';
+  }
+
+  /* Warning */
+  .warning {
+    background: rgba(255,106,158,0.07);
+    border: 1px solid rgba(255,106,158,0.2);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 0.9rem;
+    color: #ffb8d0;
+    line-height: 1.6;
+  }
+  .warning::before { content: '⚠️ '; }
+
+  /* Cheatsheet table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.88rem;
+  }
+  th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(42,42,61,0.5);
+    color: #c8c8e0;
+    line-height: 1.5;
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+  }
+
+  /* Checklist */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 8px 0;
+    font-size: 0.95rem;
+    color: #c8c8e0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border-bottom: 1px solid rgba(42,42,61,0.4);
+    line-height: 1.5;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '✓';
+    color: var(--accent3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 50px 0 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 50px;
+  }
+
+  .next-up {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(124,106,255,0.15), rgba(255,106,158,0.1));
+    border: 1px solid rgba(124,106,255,0.3);
+    border-radius: 12px;
+    padding: 20px 32px;
+    margin-bottom: 24px;
+  }
+
+  .next-up .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .next-up .topic {
+    font-size: 1.1rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .gn {
+    font-size: 1.4rem;
+    color: var(--muted);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .gn span { color: var(--accent2); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="tag">Phase 1 · Foundations Complete</div>
+    <h1>Day 1 <em>Revision</em> Notes</h1>
+    <p class="subtitle">ML/Data Science Foundations · 9 Concepts Covered</p>
+    <div class="progress-bar">
+      <div class="progress-pip done"></div>
+      <div class="progress-pip done"></div>
+      <div class="progress-pip done"></div>
+      <div class="progress-pip done"></div>
+      <div class="progress-pip done"></div>
+      <div class="progress-pip done"></div>
+      <div class="progress-pip done"></div>
+      <div class="progress-pip done"></div>
+      <div class="progress-pip done"></div>
+      <div class="progress-pip"></div>
+      <div class="progress-pip"></div>
+      <div class="progress-pip"></div>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section open" onclick="toggle(this)">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Mean, Median & Outliers</span>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="concept">
+        <div class="concept-name">CORE IDEA</div>
+        <p>Two ways to measure the "center" of data. Mean is the average — sensitive to extreme values. Median is the middle value — robust to outliers.</p>
+        <div class="formula">Mean   = sum of all values / count
+Median = middle value when sorted</div>
+        <div class="insight">If mean and median are far apart → outliers exist. Always check both.</div>
+      </div>
+      <div class="concept">
+        <div class="concept-name">OUTLIER DETECTION</div>
+        <p>Use the Z-score method: any value more than 2 standard deviations from the mean is a suspected outlier.</p>
+        <div class="formula">outliers = values where |value - mean| > 2 × std</div>
+        <div class="warning">Beginners always use mean without checking for outliers first. Bad habit.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section" onclick="toggle(this)">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Distributions & Log Transform</span>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="concept">
+        <div class="concept-name">3 KEY SHAPES</div>
+        <table>
+          <tr><th>Shape</th><th>Mean vs Median</th><th>Example</th></tr>
+          <tr><td>Normal</td><td>Equal</td><td>Heights, test scores</td></tr>
+          <tr><td>Right Skewed</td><td>Mean &gt; Median</td><td>House prices, salaries</td></tr>
+          <tr><td>Left Skewed</td><td>Mean &lt; Median</td><td>Age at retirement</td></tr>
+        </table>
+      </div>
+      <div class="concept">
+        <div class="concept-name">LOG TRANSFORM</div>
+        <p>Skewed data breaks many ML models that assume normal distribution. Log transform compresses large values and brings skewed data closer to normal.</p>
+        <div class="formula">log_prices = np.log(prices)
+# 500 becomes 6.2 — much less extreme</div>
+        <div class="insight">Log transform is one of the most used tricks in real ML pipelines. Use it on price, salary, income data.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section" onclick="toggle(this)">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Z-Score</span>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="concept">
+        <div class="concept-name">WHAT IT MEASURES</div>
+        <p>How unusual is a value compared to the rest of the data? Z-score tells you how many standard deviations a value is from the mean.</p>
+        <div class="formula">Z = (value - mean) / std</div>
+      </div>
+      <div class="concept">
+        <div class="concept-name">INTERPRETATION</div>
+        <table>
+          <tr><th>Z-Score</th><th>Meaning</th></tr>
+          <tr><td>0</td><td>Exactly average</td></tr>
+          <tr><td>1</td><td>Above average (top ~16%)</td></tr>
+          <tr><td>2</td><td>Unusually high (top ~2.5%)</td></tr>
+          <tr><td>3+</td><td>Extremely rare (top ~0.15%)</td></tr>
+          <tr><td>4+</td><td>Almost impossible — check for error</td></tr>
+        </table>
+        <div class="insight">We divide by std to compare the difference relative to how spread the data is. Context matters.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section" onclick="toggle(this)">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Normal Distribution & 68-95-99.7 Rule</span>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="concept">
+        <div class="concept-name">THE RULE</div>
+        <div class="formula">Within 1 std dev  → 68% of data
+Within 2 std devs → 95% of data
+Within 3 std devs → 99.7% of data</div>
+        <div class="insight">This is why we use 2×std for outlier detection — it captures 95% of normal data. Everything outside is the rare 5%.</div>
+      </div>
+      <div class="concept">
+        <div class="concept-name">CREATING NORMAL DATA IN NUMPY</div>
+        <div class="formula">np.random.seed(42)           # reproducibility
+np.random.normal(
+    loc   = 170,             # mean
+    scale = 10,              # std dev
+    size  = 10000            # number of values
+)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section" onclick="toggle(this)">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Probability & Conditional Probability</span>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="concept">
+        <div class="concept-name">3 RULES</div>
+        <table>
+          <tr><th>Rule</th><th>Meaning</th></tr>
+          <tr><td>0 ≤ P ≤ 1</td><td>Probability always between 0 and 1</td></tr>
+          <tr><td>Sum = 1</td><td>All outcomes add up to 1</td></tr>
+          <tr><td>P(A|B)</td><td>Probability of A given B already happened</td></tr>
+        </table>
+      </div>
+      <div class="concept">
+        <div class="concept-name">CONDITIONAL PROBABILITY — THE BIG ONE</div>
+        <p>P(A|B) = "probability of A given B." This is the backbone of how ML models make decisions. Example: P(spam | contains "FREE") = 0.90 means 90% of emails with "FREE" are spam.</p>
+        <div class="insight">This exact logic powers the Naive Bayes classifier — used in real email spam filters.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section" onclick="toggle(this)">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Correlation & Covariance</span>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="concept">
+        <div class="concept-name">DIFFERENCE</div>
+        <table>
+          <tr><th>Metric</th><th>What it tells</th><th>Range</th></tr>
+          <tr><td>Covariance</td><td>Direction only</td><td>Any number</td></tr>
+          <tr><td>Correlation</td><td>Direction + strength</td><td>-1 to +1</td></tr>
+        </table>
+      </div>
+      <div class="concept">
+        <div class="concept-name">READING CORRELATION</div>
+        <div class="formula">+1.0 → Perfect positive
++0.7 → Strong positive  → KEEP feature
+ 0.0 → No relationship  → DROP feature
+-0.7 → Strong negative  → KEEP feature
+-1.0 → Perfect negative</div>
+        <div class="warning">Correlation ≠ Causation. Ice cream sales and drowning are correlated. The real cause is hot weather (confounding variable).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section" onclick="toggle(this)">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Multicollinearity & Feature Selection</span>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="concept">
+        <div class="concept-name">THE PROBLEM</div>
+        <p>When two input features are highly correlated with each other (not just the target), the model can't decide which one to credit. This causes unstable, unreliable weights.</p>
+        <div class="formula">hours_studied vs sleep_hours = -0.98
+→ They carry the same info in opposite directions
+→ Keep one, drop the other</div>
+      </div>
+      <div class="concept">
+        <div class="concept-name">3 OPTIONS</div>
+        <table>
+          <tr><th>Option</th><th>When to use</th></tr>
+          <tr><td>Keep one, drop other</td><td>Simplest, most common</td></tr>
+          <tr><td>Combine into one feature</td><td>Feature engineering</td></tr>
+          <tr><td>Use tree-based model</td><td>Random Forest handles it</td></tr>
+        </table>
+        <div class="insight">Always check feature-vs-feature correlation, not just feature-vs-target correlation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="section" onclick="toggle(this)">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">Data Cleaning & Preprocessing</span>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="concept">
+        <div class="concept-name">THE PIPELINE</div>
+        <table>
+          <tr><th>Problem</th><th>Detection</th><th>Fix</th></tr>
+          <tr><td>Missing values</td><td>df.isnull().sum()</td><td>fillna(median)</td></tr>
+          <tr><td>Outliers</td><td>Z-score &gt; 2</td><td>Cap or remove</td></tr>
+          <tr><td>Unscaled features</td><td>df.describe()</td><td>StandardScaler</td></tr>
+          <tr><td>Categorical data</td><td>df.info()</td><td>get_dummies()</td></tr>
+        </table>
+      </div>
+      <div class="concept">
+        <div class="concept-name">WHY EACH STEP</div>
+        <ul class="checklist">
+          <li>Fill missing values — models can't learn from blanks</li>
+          <li>Cap outliers — extreme values pull predictions in wrong direction</li>
+          <li>Scale features — prevents large-number features from dominating</li>
+          <li>Encode categoricals — models only understand numbers</li>
+        </ul>
+        <div class="insight">80% of real ML work happens here. Models are only as good as the data you feed them.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="section" onclick="toggle(this)">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">Linear Regression — Your First ML Model</span>
+      <span class="toggle">+</span>
+    </div>
+    <div class="section-body">
+      <div class="concept">
+        <div class="concept-name">CORE IDEA</div>
+        <p>Find the best straight line through data to make predictions. Given past patterns, extend the line to predict future values.</p>
+        <div class="formula">y = w₁x + w₀
+
+y  → prediction (exam score)
+x  → input feature (hours studied)
+w₁ → slope: how much y changes per unit x
+w₀ → intercept: base value when x = 0</div>
+      </div>
+      <div class="concept">
+        <div class="concept-name">HOW IT LEARNS</div>
+        <p>Minimizes the total error between predictions and actual values using Mean Squared Error (MSE).</p>
+        <div class="formula">MSE  = average of (actual - predicted)²
+RMSE = √MSE  ← easier to interpret (same units as target)</div>
+      </div>
+      <div class="concept">
+        <div class="concept-name">TRAIN / TEST SPLIT</div>
+        <p>Never evaluate a model on data it was trained on — that's like giving exam questions beforehand.</p>
+        <div class="formula">train_test_split(X, y, test_size=0.2, random_state=42)
+# 80% train → model learns
+# 20% test  → we evaluate honestly</div>
+        <div class="warning">Training and testing on the same data = overfitting. Model looks perfect but fails on new data.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="next-up">
+      <div class="label">Next Session</div>
+      <div class="topic">→ Multiple Linear Regression + R² Score</div>
+    </div>
+    <p class="gn">Good night — great work today <span>✦</span></p>
+  </div>
+
+</div>
+
+<script>
+  function toggle(el) {
+    el.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
